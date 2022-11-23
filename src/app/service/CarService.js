@@ -5,6 +5,11 @@ class CarService {
     const result = await CarRepository.create(payload);
     return result;
   }
+
+  async findAll(payload) {
+    const result = await CarRepository.findAll(payload);
+    return result;
+  }
 }
 
 module.exports = new CarService();
