@@ -15,6 +15,11 @@ class CarService {
     const result = await CarRepository.findById(id);
     return result;
   }
+
+  async delete(id) {
+    const result = await CarRepository.delete(id);
+    return result;
+  }
 }
 
 module.exports = new CarService();
