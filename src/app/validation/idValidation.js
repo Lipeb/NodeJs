@@ -3,15 +3,7 @@ const Joi = require('joi');
 module.exports = async (req, res, next) => {
   try {
     const schema = Joi.object({
-      acessorios: Joi.array()
-        .min(2)
-        .items(
-          Joi.object({
-            descricao: Joi.string().trim().required()
-          })
-        )
-        .unique((a, b) => a.descricao === b.descricao)
-        .required()
+      id: Joi.string().min(24).max(24)
     });
 
     const options = {
