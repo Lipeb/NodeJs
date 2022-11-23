@@ -5,8 +5,12 @@ class CarRepository {
     return schema.create(car);
   }
 
-  async find(payload) {
+  async findAll(payload) {
     return schema.find(payload);
+  }
+
+  async findById(id) {
+    return schema.findById({ _id: id });
   }
 }
 
