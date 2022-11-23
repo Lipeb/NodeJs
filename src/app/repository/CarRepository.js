@@ -6,4 +6,4 @@ class CarRepository {
   }
 }
 
-module.exports = CarRepository();
+module.exports = new CarRepository();
