@@ -12,6 +12,10 @@ class PeopleRepository {
   async findById(id) {
     return schema.findById({ _id: id });
   }
+
+  async delete(payload) {
+    return schema.findByIdAndDelete(payload);
+  }
 }
 
 module.exports = new PeopleRepository();
