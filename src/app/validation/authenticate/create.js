@@ -1,10 +1,14 @@
 const Joi = require('joi');
-const BadRequest = require('../error/http/BadRequest');
+const BadRequest = require('../../error/http/BadRequest');
 
 module.exports = async (req, res, next) => {
   try {
     const schema = Joi.object({
-      id: Joi.string().min(24).max(24)
+      email: Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ['com', 'net', 'br'] }
+      }),
+      senha: Joi.string().min(6).required()
     });
 
     const options = {
@@ -13,15 +17,14 @@ module.exports = async (req, res, next) => {
       stripUnknown: true
     };
 
-    const { err } = await schema.validate(req.params, options);
-
+    const { err } = await schema.validate(req.body, options);
     if (err) {
       throw new BadRequest({
         details: err.details.map(() => err.message)
       });
     }
-    next();
+    return next();
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };

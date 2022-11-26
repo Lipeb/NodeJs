@@ -6,7 +6,7 @@ const is18 = require('../../helper/people/Is18');
 module.exports = async (req, res, next) => {
   try {
     const schema = Joi.object({
-      nome: Joi.string().trim().required(),
+      nome: Joi.string().trim(),
       cpf: Joi.string()
         .trim()
         .min(11)
@@ -16,8 +16,7 @@ module.exports = async (req, res, next) => {
             return help.message('Invalid CPF');
           }
           return true;
-        })
-        .required(),
+        }),
       data_nascimento: Joi.date()
         .format('DD/MM/YYYY')
         .less('01/01/2004')
@@ -27,17 +26,15 @@ module.exports = async (req, res, next) => {
             return help.message('Person should to be 18 years old');
           }
           return true;
-        })
-        .required(),
+        }),
       email: Joi.string()
         .trim()
         .email({
           minDomainSegments: 2,
           tlds: { allow: ['com', 'net', 'br'] }
-        })
-        .required(),
-      senha: Joi.string().min(6).required(),
-      habilitado: Joi.string().trim().valid('sim', 'não').required()
+        }),
+      senha: Joi.string().min(6),
+      habilitado: Joi.string().trim().valid('sim', 'não')
     });
 
     const options = {
