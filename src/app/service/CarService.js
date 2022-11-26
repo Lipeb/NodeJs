@@ -23,6 +23,11 @@ class CarService {
     return result;
   }
 
+  async patch(id, accessoryId, payload) {
+    const result = await CarRepository.patch(id, accessoryId, payload);
+    return result;
+  }
+
   async delete(id) {
     const result = await CarRepository.delete(id);
     return result;

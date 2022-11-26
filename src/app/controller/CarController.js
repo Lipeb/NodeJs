@@ -59,6 +59,23 @@ class CarController {
     }
   }
 
+  async patch(req, res, next) {
+    const { descricao } = req.body;
+    const { id, accessoryId } = req.params;
+    try {
+      const car = await CarService.patch(id, {
+        _id: accessoryId,
+        descricao
+      });
+      return res.status(200).json(car);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
+    }
+  }
+
   async delete(req, res, next) {
     const { id } = req.params;
     try {
