@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const router = require('./routes');
+const ErrorHandler = require('./app/middlewares/ErrorHandler');
 
 require('./infra/database/mongo/index');
 
@@ -19,6 +20,10 @@ class App {
 
   routes() {
     router(this.server);
+  }
+
+  errorHandler() {
+    this.server.use(ErrorHandler);
   }
 }
 
