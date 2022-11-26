@@ -1,7 +1,9 @@
 const CarRepository = require('../repository/CarRepository');
+const UniqueCar = require('../helper/car/UniqueCar');
 
 class CarService {
   async create(payload) {
+    await UniqueCar(payload.modelo);
     const result = await CarRepository.create(payload);
     return result;
   }

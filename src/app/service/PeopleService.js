@@ -1,18 +1,22 @@
 const PeopleRepository = require('../repository/PeopleRepository');
+const UniqueCPF = require('../helper/people/UniqueCPF');
+const UniqueMail = require('../helper/people/UniqueMail');
 
 class PeopleService {
   async create(payload) {
+    await UniqueCPF(payload.cpf);
+    await UniqueMail(payload.email);
     const result = await PeopleRepository.create(payload);
     return result;
   }
 
-  async find(payload) {
+  async findAll(payload) {
     const result = await PeopleRepository.findAll(payload);
     return result;
   }
 
   async findById(id) {
-    const result = PeopleRepository.findById(id);
+    const result = await PeopleRepository.findById(id);
     return result;
   }
 
@@ -21,8 +25,8 @@ class PeopleService {
     return result;
   }
 
-  async delete(payload) {
-    const result = await PeopleRepository.delete(payload);
+  async delete(id) {
+    const result = await PeopleRepository.delete(id);
     return result;
   }
 }

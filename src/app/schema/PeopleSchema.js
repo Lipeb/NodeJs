@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const mongoosePaginate = require('mongoose-paginate-v2');
+const bcrypt = require('bcryptjs');
 
 const PeopleSchema = mongoose.Schema({
   nome: {
@@ -41,6 +42,13 @@ PeopleSchema.set('toJSON', {
     delete ret.__v;
     return ret;
   }
+});
+
+PeopleSchema.pre('save', async function password(next) {
+  const hash = await bcrypt.hash(this.senha, 10);
+  this.senha = hash;
+
+  next();
 });
 
 PeopleSchema.plugin(mongoosePaginate);
