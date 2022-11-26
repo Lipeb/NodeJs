@@ -1,8 +1,8 @@
 const RentalService = require('../service/RentalService');
 const BadRequest = require('../error/http/BadRequest');
 const Conflict = require('../error/http/Conflict');
-// const NotFound = require('../error/http/NotFound');
-// const RequestNotFound = require('../error/RequestNotFound');
+const NotFound = require('../error/http/NotFound');
+const RequestNotFound = require('../error/RequestNotFound');
 
 class RentalController {
   async create(req, res, next) {
@@ -29,6 +29,19 @@ class RentalController {
         offsets: data.totalPages
       });
     } catch (err) {
+      return next(err);
+    }
+  }
+
+  async findById(req, res, next) {
+    const { id } = req.params;
+    try {
+      const result = await RentalService.findById(id);
+      return res.status(200).json(result);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
       return next(err);
     }
   }

@@ -16,6 +16,10 @@ class RentalRepository {
       }
     );
   }
+
+  async findById(id) {
+    return schema.findById({ _id: id });
+  }
 }
 
 module.exports = new RentalRepository();

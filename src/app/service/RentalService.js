@@ -10,6 +10,12 @@ class RentalService {
     const result = await RentalRepository.findAll(payload);
     return result;
   }
+
+  async findById(id) {
+    const rental = await RentalRepository.findById(id);
+
+    return rental;
+  }
 }
 
 module.exports = new RentalService();
