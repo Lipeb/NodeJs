@@ -1,12 +1,19 @@
 const CarService = require('../service/CarService');
+const BadRequest = require('../error/http/BadRequest');
+const Conflict = require('../error/http/Conflict');
+const NotFound = require('../error/http/NotFound');
+const RequestNotFound = require('../error/RequestNotFound');
 
 class CarController {
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const result = await CarService.create(req.body);
       return res.status(201).json(result);
-    } catch (error) {
-      return res.status(500).json({ error });
+    } catch (err) {
+      if (err instanceof Conflict) {
+        return new BadRequest({ details: err.entrys });
+      }
+      return next(err);
     }
   }
 
@@ -26,44 +33,42 @@ class CarController {
     }
   }
 
-  async findById(req, res) {
+  async findById(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await CarService.findOne(id);
-
-      if (!result) {
-        return res.status(404).json({ message: 'Car not found' });
-      }
-
+      const result = await CarService.findById(id);
       return res.status(200).json(result);
-    } catch (error) {
-      return res.status(500).json(error.message);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await CarService.update(id, req.body);
-
-      return res.status(200).json(result);
-    } catch (error) {
-      return res.status(400).json(error.message);
+      const car = await CarService.update(id, req.body);
+      return res.status(200).json(car);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await CarService.delete(id);
-
-      if (!result) {
-        return res.status(404).json({ message: 'Car not found' });
+      const result = CarService.delete(id);
+      return res.status(204).json(result);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
       }
-
-      return res.status(204).json();
-    } catch (error) {
-      return res.status(500).json(error.message);
+      return next(err);
     }
   }
 }

@@ -1,12 +1,19 @@
 const PeopleService = require('../service/PeopleService');
+const BadRequest = require('../error/http/BadRequest');
+const Conflict = require('../error/http/Conflict');
+const NotFound = require('../error/http/NotFound');
+const RequestNotFound = require('../error/RequestNotFound');
 
 class PeopleController {
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const result = await PeopleService.create(req.body);
       return res.status(201).json(result);
-    } catch (error) {
-      return res.status(500).json(error.message);
+    } catch (err) {
+      if (err instanceof Conflict) {
+        return new BadRequest({ details: err.entrys });
+      }
+      return next(err);
     }
   }
 
@@ -26,44 +33,42 @@ class PeopleController {
     }
   }
 
-  async findById(req, res) {
+  async findById(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await PeopleService.findOne(id);
-
-      if (!result) {
-        return res.status(404).json({ message: 'Person not found' });
-      }
-
+      const result = await PeopleService.findById(id);
       return res.status(200).json(result);
-    } catch (error) {
-      return res.status(500).json(error.message);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await PeopleService.update(id, req.body);
-
-      return res.status(200).json(result);
-    } catch (error) {
-      return res.status(400).json(error.message);
+      const people = await PeopleService.update(id, req.body);
+      return res.status(200).json(people);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
-      const result = await PeopleService.delete(id);
-
-      if (!result) {
-        return res.status(404).json({ message: 'Person not found' });
+      await PeopleService.delete(id);
+      return res.status(204).end();
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
       }
-
-      return res.status(204).json();
-    } catch (error) {
-      return res.status(400).json(error.message);
+      return next(err);
     }
   }
 }

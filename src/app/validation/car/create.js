@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const BadRequest = require('../../error/http/BadRequest');
 
 module.exports = async (req, res, next) => {
   try {
@@ -25,9 +26,13 @@ module.exports = async (req, res, next) => {
     };
 
     const { err } = await schema.validate(req.body, options);
-    if (err) throw err;
+    if (err) {
+      throw new BadRequest({
+        details: err.details.map(() => err.message)
+      });
+    }
     return next();
   } catch (err) {
-    return res.status(400).json(err.message);
+    return next(err);
   }
 };
