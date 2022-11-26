@@ -7,7 +7,7 @@ class PeopleService {
   }
 
   async find(payload) {
-    const result = await PeopleRepository.find(payload);
+    const result = await PeopleRepository.findAll(payload);
     return result;
   }
 

@@ -10,12 +10,19 @@ class CarController {
     }
   }
 
-  async find(req, res) {
+  async find(req, res, next) {
     try {
-      const result = await CarService.find(req.query);
-      return res.status(200).json(result);
-    } catch (error) {
-      return res.status(500).json(error.message);
+      const { limit, offset, ...query } = req.query;
+      const { docs, ...data } = await CarService.findAll(query, limit, offset);
+      return res.status(200).json({
+        veiculos: docs,
+        total: data.totalDocs,
+        limit: data.limit,
+        offset: data.page,
+        offsets: data.totalPages
+      });
+    } catch (err) {
+      return next(err);
     }
   }
 
