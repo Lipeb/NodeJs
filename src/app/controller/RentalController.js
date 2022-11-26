@@ -45,6 +45,19 @@ class RentalController {
       return next(err);
     }
   }
+
+  async delete(req, res, next) {
+    const { id } = req.params;
+    try {
+      const result = await RentalService.delete(id);
+      return res.status(204).json(result);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
+    }
+  }
 }
 
 module.exports = new RentalController();
