@@ -1,7 +1,9 @@
 const RentalRepository = require('../repository/RentalRepository');
+const Affiliate = require('../utils/AffiliateAdress');
 
 class RentalService {
   async create(payload) {
+    await Affiliate.data(payload);
     const result = await RentalRepository.create(payload);
     return result;
   }
