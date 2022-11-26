@@ -17,6 +17,11 @@ class RentalService {
     return rental;
   }
 
+  async update(id, payload) {
+    const result = await RentalRepository.update(id, payload);
+    return result;
+  }
+
   async delete(id) {
     const result = await RentalRepository.delete(id);
     return result;

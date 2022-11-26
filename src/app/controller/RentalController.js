@@ -46,6 +46,19 @@ class RentalController {
     }
   }
 
+  async update(req, res, next) {
+    const { id } = req.params;
+    try {
+      const result = await RentalService.update(id, req.body);
+      return res.status(200).json(result);
+    } catch (err) {
+      if (err instanceof RequestNotFound) {
+        return new NotFound(err.message);
+      }
+      return next(err);
+    }
+  }
+
   async delete(req, res, next) {
     const { id } = req.params;
     try {
