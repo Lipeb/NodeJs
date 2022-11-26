@@ -16,6 +16,22 @@ class RentalController {
       return next(err);
     }
   }
+
+  async find(req, res, next) {
+    try {
+      const { limit, offset, ...query } = req.query;
+      const { docs, ...data } = await RentalService.findAll(query, limit, offset);
+      return res.status(200).json({
+        locadoras: docs,
+        total: data.totalDocs,
+        limit: data.limit,
+        offset: data.page,
+        offsets: data.totalPages
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
 }
 
 module.exports = new RentalController();
